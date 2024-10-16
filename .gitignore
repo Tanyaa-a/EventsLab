@@ -1,0 +1,16 @@
+
+logs
+*.log
+npm-debug.log*
+
+frontend/node_modules/
+backend/node_modules/
+
+frontend/.npm
+backend/.npm
+
+frontend/.env
+backend/.env
+
+frontend/.DS_Store
+backend/.DS_Store
