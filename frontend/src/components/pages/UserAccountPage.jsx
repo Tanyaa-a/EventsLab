@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from 'react';
-import { fetchEvents } from '../../utils/DBRequests'; 
+import { fetchUserEvents } from '../../utils/DBRequests'; 
 import mainImage from "../../assets/mainImage.jpg";
 import { Link } from 'react-router-dom'; 
 
-const EventsPage = () => {
+const UserEventsPage = () => {
     const [events, setEvents] = useState([]);
+    const [error, setError] = useState('');
+    const user = JSON.parse(sessionStorage.getItem('user'));
 
     useEffect(() => {
-        const loadEvents = async () => {
+        const loadUserEvents = async () => {
             try {
-                const eventsList = await fetchEvents(); 
+                if (!user || !user._id) {
+                    setError('You must be logged in to view your events.');
+                    return;
+                }
+
+                const eventsList = await fetchUserEvents(user._id); 
                 setEvents(eventsList); 
             } catch (error) {
-                console.error('Error loading events:', error);
+                console.error('Error loading user events:', error);
+                setError('Error loading events');
             }
         };
 
-        loadEvents();
-    }, []);
+        loadUserEvents();
+    }, [user]);
 
     return (
         <div className="container mx-auto px-4">
-            <h1 className="text-3xl font-bold my-4">Events Near You</h1>
-            <Link to="/add-event">
-                <button className="bg-orange-500 text-white px-4 py-2 rounded mb-4">
-                    Add Your Event
-                </button>
-            </Link> 
+            <h1 className="text-3xl font-bold my-4">Your Events</h1>
+           
             <div className="events grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {events.length > 0 ? (
                     events.map((event) => (
@@ -43,11 +47,11 @@ const EventsPage = () => {
                         </div>
                     ))
                 ) : (
-                    <p>No events available</p>
+                    <p>{error ? error : "No events created by you yet."}</p>
                 )}
             </div>
         </div>
     );
 };
 
-export default EventsPage;
+export default UserEventsPage;

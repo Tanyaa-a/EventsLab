@@ -6,6 +6,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import EventsPage from './components/pages/EventsPage';
 import AddEventForm from './components/pages/AddEventForm';
+import UserAccountPage from './components/pages/UserAccountPage';
 
 function AppRoutes() {
   return (
@@ -17,6 +18,7 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/events-page" element={<EventsPage />} />
         <Route path="/add-event" element={<AddEventForm />} />
+        <Route path="/edit-event" element={<UserAccountPage />} />
       </Routes>
     </Router>
   );

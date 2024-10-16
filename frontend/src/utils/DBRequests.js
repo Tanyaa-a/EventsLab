@@ -55,3 +55,25 @@ export const fetchEvents = async () => {
       throw new Error(error.response.data.error);
     }
 };
+
+export const fetchUserEvents = async (userId) => {
+  try {
+    const response = await axios.get(`/events?createdBy=${userId}`);
+  return response;
+  }
+  catch (error) {
+    throw new Error(error.response.data.error);
+  }
+  
+};
+
+export const deleteEvent = async (eventId) => {
+  try {
+    const response = await axios.delete(`/events/${eventId}`);
+    return response;
+  }
+  catch (error) {
+    throw new Error(error.response.data.error);
+  }
+};
+
