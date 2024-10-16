@@ -10,8 +10,7 @@ export const login = async ({ email, password }) => {
     console.log(response);
     return response;
   } catch (error) {
-    console.log(error.response.data)
-        throw new Error(error.response.data.msg);
+        throw new Error(error.response.data.error);
   }
 };
 
@@ -28,4 +27,21 @@ export const register = async (userData) => {
         console.log(error)
         throw new Error(error.response.data.error);
     }
-  };
+};
+  
+
+export const addEvent = async (eventData) => {
+  try {
+    const token = sessionStorage.getItem('token'); 
+    const response = await axios.post(`${API_BASE_URL}/events`, eventData, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+    
+    return response;
+  } catch (error) {
+   
+    throw new Error(error.response.data.error);
+  }
+};
