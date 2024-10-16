@@ -1,5 +1,4 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-
 import React from 'react';
 
 const AuthContext = createContext();
@@ -13,9 +12,7 @@ export const AuthProvider = ({ children }) => {
     const [userData, setUserData] = useState(
         JSON.parse(sessionStorage.getItem('user')) || {}
     );
-    const [token, setToken] = useState(
-        JSON.parse(sessionStorage.getItem('token')) || ''
-    );
+    const [token, setToken] = useState(sessionStorage.getItem('token') || '');
 
     useEffect(() => {
         if (token) {
@@ -26,22 +23,19 @@ export const AuthProvider = ({ children }) => {
     }, [token]);
 
     const setUserSession = (status, data) => {
-        sessionStorage.setItem('user', JSON.stringify(data.userInfo));
-        sessionStorage.setItem('token', JSON.stringify(data.token));
+        sessionStorage.setItem('user', JSON.stringify(data.user)); 
+        sessionStorage.setItem('token', data.token); 
         setIsLoggedIn(status);
-        setUserData(data.userInfo);
+        setUserData(data.user);
         setToken(data.token);
     };
-
-    useEffect(() => {
-        sessionStorage.setItem('user', JSON.stringify(userData));
-    }, [userData]);
 
     const clearUserSession = () => {
         sessionStorage.removeItem('user');
         sessionStorage.removeItem('token');
         setIsLoggedIn(false);
         setUserData({});
+        setToken('');
     };
 
     return (

@@ -1,52 +1,55 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { login } from '../../utils/DBRequests';
+import { useAuth } from '../../AuthProvider';
 
 const Login = () => {
-    const [formData, setFormData] = useState({ email: '', password: '' });
-    const [formErrors, setFormErrors] = useState({});
+    const [form, setForm] = useState({ email: '', password: '' });
+    const [error, setError] = useState({});
+    const { isLoggedIn, setUserSession } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
-
+    
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-        setFormErrors({ ...formErrors, [e.target.name]: '', form: '' });
+        setForm({ ...form, [e.target.name]: e.target.value });
+        setError({ ...error, [e.target.name]: '', form: '' });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (!formData.email || !formData.password) {
-            setFormErrors({
-                ...formErrors,
-                email: !formData.email ? 'Email is required' : null,
-                password: !formData.password ? 'Password is required' : null,
+        if (!form.email || !form.password) {
+            setError({
+                ...error,
+                email: !form.email ? 'Email is required' : null,
+                password: !form.password ? 'Password is required' : null,
             });
             return;
         }
-
         try {
-            const result = await login(formData); 
+            const result = await login(form);
             if (result.status === 200) {
-            
-                sessionStorage.setItem('token', result.data.token);
-                sessionStorage.setItem('user', JSON.stringify(result.data.user));
+                setUserSession(true, result.data);
+                navigate('/events-page');
 
-            
-                const redirectTo = location.state?.from || '/';
-                navigate(redirectTo);
+                setForm({ email: '', password: '' });
+                setError('');
             }
         } catch (error) {
-            setFormErrors({ ...formErrors, form: error.message || 'Invalid email or password' });
+            console.log(error);
+            setError({
+                ...error,
+                form: 'Invalid email or password',
+            });
         }
     };
 
     useEffect(() => {
-        const token = sessionStorage.getItem('token'); // Check if user is logged in
-        if (token) {
-            navigate('/'); 
+        if (isLoggedIn) {
+            navigate('/dashboard');
         }
-    }, [navigate]);
+    }, [isLoggedIn]);
+
+      
 
     return (
         <div className="w-full h-full flex flex-col items-center justify-center">
@@ -58,11 +61,11 @@ const Login = () => {
                         type="email"
                         name="email"
                         id="email"
-                        value={formData.email}
+                        value={form.email}
                         onChange={handleChange}
                         className="border-2 border-grey rounded-md p-2"
                     />
-                    {formErrors.email && <p className="text-red">{formErrors.email}</p>}
+                    {error.email && <p className="text-red">{error.email}</p>}
                 </div>
                 <div className="w-full flex flex-col gap-2 mb-6 relative">
                     <label htmlFor="password" className="text-black">Password:</label>
@@ -70,11 +73,11 @@ const Login = () => {
                         type="password"
                         name="password"
                         id="password"
-                        value={formData.password}
+                        value={form.password}
                         onChange={handleChange}
                         className="border-2 border-grey rounded-md p-2"
                     />
-                    {formErrors.password && <p className="text-red">{formErrors.password}</p>}
+                    {error.password && <p className="text-red">{error.password}</p>}
                 </div>
                 <button
                     type="submit"
@@ -85,11 +88,10 @@ const Login = () => {
                 <p className="text-black">
                     Don't have an account? <Link to="/register" className="underline">Sign up</Link>
                 </p>
-                {formErrors.form && <p className="text-red">{formErrors.form}</p>}
+                {error.form && <p className="text-red">{error.form}</p>}
             </form>
         </div>
     );
 };
 
 export default Login;
-
