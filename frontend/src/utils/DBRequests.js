@@ -45,3 +45,13 @@ export const addEvent = async (eventData) => {
     throw new Error(error.response.data.error);
   }
 };
+
+
+export const fetchEvents = async () => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/events`); 
+        return response.data.events;
+    } catch (error) {
+      throw new Error(error.response.data.error);
+    }
+};
