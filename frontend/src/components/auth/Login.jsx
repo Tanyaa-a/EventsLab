@@ -45,7 +45,7 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/dashboard');
+            navigate('/events-page');
         }
     }, [isLoggedIn]);
 

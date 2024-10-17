@@ -10,7 +10,7 @@ const {
   deleteEvent
 } = require('../controllers/events');
 
-// Define routes
+
 router.route('/')
   .post(createEvent) 
   .get(getAllEvents); 

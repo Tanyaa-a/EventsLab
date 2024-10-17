@@ -36,7 +36,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/events", eventRouter); 
+app.use("/api/v1/events", authenticateUser, eventRouter); 
 
 const port = process.env.PORT || 3000;
 

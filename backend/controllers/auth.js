@@ -4,11 +4,23 @@ const { StatusCodes } = require("http-status-codes");
 const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
-  const user = await User.create({ ...req.body });
-
-  const token = user.createJWT();
-  res.status(StatusCodes.CREATED).json({ firstName: user.firstName, lastName: user.lastName, token });
+  try {
+      const { email } = req.body;
+      
+      //check if the user with this email exists
+      const existingUser = await User.findOne({ email });
+      if(existingUser) {
+          return res.status(StatusCodes.BAD_REQUEST).json({ error: 'User with this email already exists' });
+      };
+      
+      const user = await User.create({ ...req.body });
+      const token = user.createJWT();
+      res.status(StatusCodes.CREATED).json({ user, token });
+  } catch (error) {
+      res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+  }
 };
+
 
 const login = async (req, res) => {
   const { email, password } = req.body;

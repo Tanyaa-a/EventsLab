@@ -48,12 +48,23 @@ export const addEvent = async (eventData) => {
 
 
 export const fetchEvents = async () => {
-    try {
-        const response = await axios.get(`${API_BASE_URL}/events`); 
-        return response.data.events;
-    } catch (error) {
-      throw new Error(error.response.data.error);
+  try {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found, please log in.');
     }
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
+    const response = await axios.get(`${API_BASE_URL}/events`, config); 
+    return response.data.events;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Error fetching events');
+  }
 };
 
 export const fetchUserEvents = async (userId) => {
