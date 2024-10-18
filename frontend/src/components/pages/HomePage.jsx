@@ -19,7 +19,7 @@ const HomePage = () => {
             Add events, find events, and connect with your community
           </p>
           <div className="flex justify-center lg:justify-start mt-6">
-          <Link to="/events-page"> 
+          <Link to="/login"> 
             <button className="bg-red-600 text-white px-4 py-2 rounded">
               Events
               </button>

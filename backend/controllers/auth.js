@@ -1,45 +1,62 @@
 const User = require("../models/User");
 const { StatusCodes } = require("http-status-codes");
+const { BadRequestError, UnauthenticatedError } = require("../errors");
 
-const jwt = require("jsonwebtoken");
 
 const register = async (req, res) => {
   try {
-      const { email } = req.body;
-      
-      //check if the user with this email exists
-      const existingUser = await User.findOne({ email });
-      if(existingUser) {
-          return res.status(StatusCodes.BAD_REQUEST).json({ error: 'User with this email already exists' });
-      };
-      
-      const user = await User.create({ ...req.body });
-      const token = user.createJWT();
-      res.status(StatusCodes.CREATED).json({ user, token });
+    const { email, password } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      throw new BadRequestError("User with this email already exists");
+    }
+
+    const user = await User.create({ ...req.body });
+
+    const token = user.createJWT();
+
+    return res.status(StatusCodes.CREATED).json({
+      user: { _id: user._id, firstName: user.firstName, lastName: user.lastName, email: user.email },
+      token,
+    });
   } catch (error) {
-      res.status(StatusCodes.BAD_REQUEST).json({ error: error.message });
+    return res
+      .status(error.statusCode || StatusCodes.BAD_REQUEST)
+      .json({ error: error.message || "An error occurred during registration" });
   }
 };
 
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+
   if (!email || !password) {
     throw new BadRequestError("Please provide both email and password");
   }
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw new UnauthenticatedError("Please provide credentials");
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new UnauthenticatedError("Invalid credentials");
+    }
+
+    const isPasswordCorrect = await user.comparePassword(password);
+    if (!isPasswordCorrect) {
+      throw new UnauthenticatedError("Invalid credentials");
+    }
+
+    const token = user.createJWT();
+
+    return res.status(StatusCodes.OK).json({
+      user: { _id: user._id, firstName: user.firstName, lastName: user.lastName },
+      token,
+    });
+  } catch (error) {
+    return res
+      .status(error.statusCode || StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message || "An error occurred during login" });
   }
-    
-  const isPasswordCorrect = await user.comparePassword(password);
-  if (!isPasswordCorrect) {
-    throw new UnauthenticatedError("Invalid credentials");
-  }
-  const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ 
-    user: { _id: user._id, firstName: user.firstName, lastName: user.lastName }, 
-    token });
 };
 
 module.exports = {

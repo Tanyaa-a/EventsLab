@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { register } from '../../utils/DBRequests'
+import { register } from '../../utils/DBRequests';
 
 const Register = () => {
     const [formData, setFormData] = useState({
@@ -17,15 +17,21 @@ const Register = () => {
 
     const navigate = useNavigate();
 
-    const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
+    const onChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const onSubmit = async (e) => {
         e.preventDefault();
+        setError(''); 
+
         if (password !== confirmPassword) {
             setError('Passwords do not match');
-        } else {
+            return;
+        }
+
+        try {
+            await register({ firstName, lastName, email, password });
             setSuccessMessage('Registration successful! Redirecting to login page...');
-          
+
             const modal = document.createElement('div');
             modal.className = 'fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50';
             
@@ -40,21 +46,11 @@ const Register = () => {
                 document.body.removeChild(modal);
                 navigate('/login');
             }, 2000);
-            try {
-                await register({ firstName, lastName, email, password });
-                console.log('registration succeful')
-                setSuccessMessage('Registration successful! Redirecting to login page...');
-                setTimeout(() => {
-                    navigate('/login'); 
-                }, 2000);
-            } catch (error) {
-                setError(error.message);
-                console.log('Registration failed', error);
-            }
+        } catch (error) {
+            setError(error.response?.data?.error || 'Registration failed. Please try again.');
         }
     };
 
-    
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
@@ -121,6 +117,7 @@ const Register = () => {
                         />
                     </div>
                     {error && <p className="text-red-500 mb-4">{error}</p>}
+                    {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
                     <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         Register
                     </button>

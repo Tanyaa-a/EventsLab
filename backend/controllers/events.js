@@ -25,18 +25,16 @@ const getEventById = async (req, res) => {
 };
 
 const getUserEvents = async (req, res) => {
-  const { userId } = req.params; // Extract userId from the request parameters
+  const { userId } = req.params; 
 
   try {
-    const events = await Event.find({ createdBy: userId }); // Find events created by the specific user
-    res.status(StatusCodes.OK).json({ events, count: events.length }); // Respond with the events
+    const events = await Event.find({ createdBy: userId });
+    res.status(StatusCodes.OK).json({ events, count: events.length });
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Error fetching user events' });
   }
 };
 
-
-// Update an event
 const updateEvent = async (req, res) => {
   const { id: eventId } = req.params;
   const event = await Event.findByIdAndUpdate(eventId, req.body, {
@@ -51,7 +49,7 @@ const updateEvent = async (req, res) => {
   res.status(StatusCodes.OK).json({ event });
 };
 
-// Delete an event
+
 const deleteEvent = async (req, res) => {
   const { id: eventId } = req.params;
   const event = await Event.findByIdAndDelete(eventId);

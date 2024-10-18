@@ -69,22 +69,55 @@ export const fetchEvents = async () => {
 
 export const fetchUserEvents = async (userId) => {
   try {
-    const response = await axios.get(`/events?createdBy=${userId}`);
-  return response;
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found, please log in.');
+    }
+
+    const response = await axios.get(`${API_BASE_URL}/events?createdBy=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Error fetching user events');
   }
-  catch (error) {
-    throw new Error(error.response.data.error);
+};
+export const editEvent = async (eventId, eventData) => {
+  try {
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found, please log in.');
+    }
+
+    const response = await axios.patch(`${API_BASE_URL}/events/${eventId}`, eventData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Error editing event');
   }
-  
 };
 
 export const deleteEvent = async (eventId) => {
   try {
-    const response = await axios.delete(`/events/${eventId}`);
+    const token = sessionStorage.getItem('token');
+    if (!token) {
+      throw new Error('No token found, please log in.');
+    }
+
+    const response = await axios.delete(`${API_BASE_URL}/events/${eventId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, 
+      },
+    });
+
     return response;
-  }
-  catch (error) {
-    throw new Error(error.response.data.error);
+  } catch (error) {
+    throw new Error(error.response?.data?.error || 'Error deleting event');
   }
 };
 

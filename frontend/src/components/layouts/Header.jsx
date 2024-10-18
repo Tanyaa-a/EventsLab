@@ -43,7 +43,7 @@ const Header = () => {
           About Us
         </NavLink>
 
-        <NavLink to={isLoggedIn ? "/events-page" : "/login"} className="flex items-center">
+        <NavLink to={isLoggedIn ? "/edit-event" : "/login"} className="flex items-center">
           {isLoggedIn ? (
             <div className="w-8 h-8 flex items-center justify-center bg-gray-500 text-white rounded-full font-bold">
               {initials}

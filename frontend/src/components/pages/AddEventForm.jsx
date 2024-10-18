@@ -41,7 +41,7 @@ const AddEventForm = () => {
         };
     
         try {
-            const result = await addEvent(eventData);
+            await addEvent(eventData);
             navigate('/events-page');
         } catch (error) {
             console.error('Error adding event:', error.message);
@@ -53,7 +53,7 @@ const AddEventForm = () => {
     return (
         <div className="add-event-form max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
             <h1 className="text-2xl font-bold mb-6 text-center">Add Your Event</h1>
-            {error && <p className="text-red-500">{error}</p>} {/* Show any error */}
+            {error && <p className="text-red-500">{error}</p>} 
             <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
                 <label className="block text-sm font-medium text-gray-700">Title:</label>
                 <input 
