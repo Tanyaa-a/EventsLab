@@ -58,6 +58,15 @@ const login = async (req, res) => {
       .json({ error: error.message || "An error occurred during login" });
   }
 };
+const logout = async (req, res) => {
+  res.status(StatusCodes.OK).json({ message: "User logged out successfully" });
+};
+
+module.exports = {
+  register,
+  login,
+  logout,
+};
 
 module.exports = {
   register,

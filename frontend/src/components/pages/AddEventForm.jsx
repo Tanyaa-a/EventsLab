@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { addEvent } from '../../utils/DBRequests'; 
 import { useNavigate } from 'react-router-dom';
 
@@ -15,8 +15,15 @@ const AddEventForm = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const user = JSON.parse(sessionStorage.getItem('user'));
-    console.log('User:', user);
+    // Check user authentication
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem('user'));
+        if (!user) {
+            setError('You must be logged in to create an event.');
+            navigate('/login');  
+        }
+    }, [navigate]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -25,10 +32,7 @@ const AddEventForm = () => {
         e.preventDefault();
     
         const user = JSON.parse(sessionStorage.getItem('user'));  
-    
-        console.log(user._id);
-        const userIdAsString = user._id.toString();  
-        console.log('User ID after conversion:', userIdAsString);
+        const userIdAsString = user?._id?.toString();  
     
         if (!user || !userIdAsString) {
             setError('User must be logged in to create an event.');
@@ -48,7 +52,6 @@ const AddEventForm = () => {
             setError('An error occurred while adding the event.');
         }
     };
-    
 
     return (
         <div className="add-event-form max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">

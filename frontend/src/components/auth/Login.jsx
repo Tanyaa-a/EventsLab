@@ -52,7 +52,7 @@ const Login = () => {
       
 
     return (
-        <div className="w-full h-full flex flex-col items-center justify-center">
+        <div className="w-full h-full min-h-screen flex flex-col items-center justify-center">
             <h2 className="font-alex font-semibold text-3xl md:text-5xl text-black">Log In</h2>
             <form onSubmit={handleSubmit} className="w-10/12 md:w-1/3 2xl:w-1/4 flex flex-col">
                 <div className="w-full flex flex-col gap-2 mb-6">

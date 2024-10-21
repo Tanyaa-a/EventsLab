@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import HomePage from './components/pages/HomePage';
 import Header from './components/layouts/Header';
+import Footer from './components/layouts/Footer';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import EventsPage from './components/pages/EventsPage';
@@ -20,6 +21,7 @@ function AppRoutes() {
         <Route path="/add-event" element={<AddEventForm />} />
         <Route path="/edit/:id" element={<EditEventPage />} /> 
       </Routes>
+      <Footer />
     </Router>
   );
 }

@@ -35,15 +35,17 @@ const EventsPage = () => {
     };
 
     return (
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 pb-12">
             <h1 className="text-3xl font-bold my-4">Events Near You</h1>
 
-            {user && (
+            {user ? (
                 <Link to="/add-event">
                     <button className="bg-orange-500 text-white px-4 py-2 rounded mb-4">
                         Add Your Event
                     </button>
                 </Link>
+            ) : (
+                <p className="text-red-500">You must be logged in to add an event.</p>
             )}
 
             <div className="events grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
