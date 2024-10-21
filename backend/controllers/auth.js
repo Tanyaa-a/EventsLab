@@ -68,7 +68,3 @@ module.exports = {
   logout,
 };
 
-module.exports = {
-  register,
-  login,
-};
