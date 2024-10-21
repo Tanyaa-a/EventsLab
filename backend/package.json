@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "prewiev": "vite preview",
+    "start": "serve -s dist",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
